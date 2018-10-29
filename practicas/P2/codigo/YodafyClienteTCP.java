@@ -15,8 +15,10 @@ public class YodafyClienteTCP {
 
 	public static void main(String[] args) {
 		
-		byte []buferEnvio;
-		byte []buferRecepcion=new byte[256];
+		//byte []buferEnvio;
+		string buferEnvio;
+		//byte []buferRecepcion=new byte[256];
+		stringbuferRecepcion;
 		int bytesLeidos=0;
 		
 		// Nombre del host donde se ejecuta el servidor:
@@ -37,18 +39,20 @@ public class YodafyClienteTCP {
 
 			InputStream inputStream = socketServicio.getInputStream();
 			OutputStream outputStream = socketServicio.getOutputStream();
+			PrintWriter outPrinter = new
+				PrintWriter(socketServicio.getOutputStream(),true);
 			
 			// Si queremos enviar una cadena de caracteres por un OutputStream, hay que pasarla primero
 			// a un array de bytes:
-			buferEnvio="Al monte del volcán debes ir sin demora".getBytes();
+			buferEnvio="Al monte del volcán debes ir sin demora";//.getBytes();
 			
 			// Enviamos el array por el outputStream;
 			//////////////////////////////////////////////////////
 			// ... .write ... (Completar)
 			//////////////////////////////////////////////////////
 			
-			outputStream.write(buferEnvio,0,buferEnvio.length);
-
+			//outputStream.write(buferEnvio,0,buferEnvio.length);
+			outPrinter.println(buferEnvio);
 
 			// Aunque le indiquemos a TCP que queremos enviar varios arrays de bytes, sólo
 			// los enviará efectivamente cuando considere que tiene suficientes datos que enviar...
@@ -56,13 +60,16 @@ public class YodafyClienteTCP {
 			//////////////////////////////////////////////////////
 			// ... .flush(); (Completar)
 			//////////////////////////////////////////////////////
-			outputStream.flush();
+			//outputStream.flush();
 			// Leemos la respuesta del servidor. Para ello le pasamos un array de bytes, que intentará
 			// rellenar. El método "read(...)" devolverá el número de bytes leídos.
 			//////////////////////////////////////////////////////
 			// bytesLeidos ... .read... buferRecepcion ; (Completar)
 			//////////////////////////////////////////////////////
-			bytesLeidos = inputStream.read(buferRecepcion);
+			BufferedReader inReader = new BufferedReader(new InputStreamReader(socketServicio.getInputStream()));
+
+			//bytesLeidos = inputStream.read(buferRecepcion);
+			bytesLeidos = inReader.readLine(buferRecepcion);
 
 			// MOstremos la cadena de caracteres recibidos:
 			System.out.println("Recibido: ");

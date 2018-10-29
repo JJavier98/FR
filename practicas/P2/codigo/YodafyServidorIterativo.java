@@ -21,6 +21,9 @@ public class YodafyServidorIterativo {
 		//Server Socket
 		ServerSocket socketServidor;
 		Socket socketServicio;
+		PrintWriter outPrinter = new
+			PrintWriter(socketServicio.getOutputStream(),true);
+
 		
 		try {
 			// Abrimos el socket en modo pasivo, escuchando el en puerto indicado por "port"

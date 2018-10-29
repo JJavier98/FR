@@ -1,0 +1,72 @@
+openssl dgst -sha -out dgst_texto.txt texto.txt --> CREA UNA CLAVE HASH PARA EL FICHERO. UN SOLO CAMBIO EN EL FICHERO PRODUCE UN HASH COMPLETAMENTE DISTINTO
+
+EN EL CIFRADO SIMÉTRICO SE ENCRIPTA Y DESENCRIPTA USANDO LA CLAVE PÚBLICA
+
+PARA SABER QUÉ PARÁMETROS SE USAN PARA ENCRIPTAR CON openssl PODEMOS HACER man enc
+PARA SABER LOS ALGORITMOS DE ENCRIPTACIÓN DE SSL HACEMOS openssl list cipher-comands
+PARA SABER LOS ALGORITMOS HASH openssl list dgst-commands
+PARA AMBOS CASOS PODEMOS TECLEAR 	openssl help
+
+ENCRIPTAR UN ARCHIVO --> openssl enc -aes-128-cbc -in <archivo> -out <enc-archivo>
+
+DESENCRIPTAR UN ARCHIVO --> openssl enc -d -aes-128-cbc -in <enc-archivo> -out <archivo>
+
+-d: desencriptar
+-in: archivo de entrada
+-out: archivo de salida
+-aes-128-cbc: protocolo de encriptamiento
+
+PARA COMPARAR FICHEROS Y COMPROBAR QUE NO HA HABIDO CAMBIOS -->  comparar los hash
+PARA FICHEROS DE TEXTO PLANO TAMBIEN PODEMOS USAR LOS COMANDOS cmp Y diff
+
+EN EL CIFRADO SIMÉTRICO DEBE HABERUN MOMENTO EN EL QUE SE PASE LA CLAVE DEL EMISOR AL RECEPTOR DE MANERA QUE PUEDE SER DESCUBIERTA LA ENCRIPTACIÓN
+
+EN EL CIFRADO ASIMÉTRICO EL EMISOR PROPORCIONA UNA CLAVE PÚBLICA QUE ES CAPAZ DE ENCRIPTAR UN CONTENIDO QUE MÁS TARDE SÓLO LA CLAVE PRIVADA QUE ÉL MISMO POSEE PODRÁ DESENCRIPTAR.
+
+man genpkey --> MANUAL DE LA ORDEN DE SSL PARA GENERAR CLAVES PRIVADAS
+man pkey --> MANUAL DE LA ORDEN DE SSL PARA GENERAR CLAVES PÚBLICAS
+man pkeyutl --> utilidades a la hora de usar claves publicas y privadas
+
+
+GENERACIÓN DE CLAVE PRIVADA Y CLAVE PÚBLICA A PARTIR DE LA PRIVADA
+openssl genpkey -algorithm RSA -out privkey
+openssl pkey -in privkey -pubout -out pubkey
+
+ENCRIPTADO MEDIANTE LA CLAVE PÚBLICA
+openssl pkeyutl -pubin -encrypt -in <archivo> -out <enc-archivo> -inkey pubkey
+
+DESENCRYPTADO MEDIANTE L CLAVE PRIVADA
+openssl pkeyutl -decrypt -in <enc-archivo> -out <archivo> -inkey privkey
+
+EL PROBLEMA DE ÉSTOS MÉTODOS ES QUE CUALQUIERA PUEDE ENVIAR UN PAQUETE AL RECEPTOR, INCLUSO SOFTWARE MALICIOSO
+PARA EVITAR ESTO SE UTILIZAN LOS CERTIFICADOS DIGITALES QUE "FIRMAN" LOS PAQUETES ENVIADOS Y LOS ASOCIA A UN USUARIO ESPECÍFICO
+EN ESTE MOMENTO EL RECEPTOR DECIDE SI CONFIAR EN EL EMISOR O NO.
+
+
+////////////////////////////////////// VPN //////////////////////////////////////////////////////////////////
+
+GENERAR UNA CLAVE PARA ESTABLECER UNA VPN SEGURA
+openvpn --genkey --secret llave
+
+TRANSFERIRLA DE MANERA SEGURA
+scp llave alumno@10.0.2.5:/home/alumno
+
+PARA CREAR EL TÚNEL DEFINIMOS UN NUEVO FICHERO "TUNEL"
+crear un fichero que se llame tunel en la máquina 10.0.2.5 y escribir:
+
+	dev tun
+	ifconfig 11.0.2.4 11.0.2.5
+	secret llave
+
+EN LA MÁQUINA 10.0.2.4
+crear un fichero que se llame tunel y escribir:
+	
+	remote 10.0.2.4
+	dev tun
+	ifconfig 1.0.2.5 11.0.2.4
+	secret llave
+
+PARA HACER EL TUNEL
+HACER EN LAS DOS MAQUINAS:
+sudo openvpn tunel
+(dejar las terminales en ese estado)

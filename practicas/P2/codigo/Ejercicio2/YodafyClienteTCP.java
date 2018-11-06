@@ -15,10 +15,8 @@ public class YodafyClienteTCP {
 
 	public static void main(String[] args) {
 		
-		//byte []buferEnvio;
-		string buferEnvio;
-		//byte []buferRecepcion=new byte[256];
-		stringbuferRecepcion;
+		String buferEnvio;
+		String buferRecepcion;
 		int bytesLeidos=0;
 		
 		// Nombre del host donde se ejecuta el servidor:
@@ -37,21 +35,17 @@ public class YodafyClienteTCP {
 			
 			socketServicio = new Socket(host, port);
 
-			InputStream inputStream = socketServicio.getInputStream();
-			OutputStream outputStream = socketServicio.getOutputStream();
-			PrintWriter outPrinter = new
-				PrintWriter(socketServicio.getOutputStream(),true);
-			
+			PrintWriter outPrinter = new PrintWriter(socketServicio.getOutputStream(),true);
+
 			// Si queremos enviar una cadena de caracteres por un OutputStream, hay que pasarla primero
 			// a un array de bytes:
-			buferEnvio="Al monte del volcán debes ir sin demora";//.getBytes();
+			buferEnvio=new String("Al monte del volcán debes ir sin demora");//getBytes();
 			
 			// Enviamos el array por el outputStream;
 			//////////////////////////////////////////////////////
 			// ... .write ... (Completar)
 			//////////////////////////////////////////////////////
 			
-			//outputStream.write(buferEnvio,0,buferEnvio.length);
 			outPrinter.println(buferEnvio);
 
 			// Aunque le indiquemos a TCP que queremos enviar varios arrays de bytes, sólo
@@ -68,14 +62,12 @@ public class YodafyClienteTCP {
 			//////////////////////////////////////////////////////
 			BufferedReader inReader = new BufferedReader(new InputStreamReader(socketServicio.getInputStream()));
 
-			//bytesLeidos = inputStream.read(buferRecepcion);
-			bytesLeidos = inReader.readLine(buferRecepcion);
+
+			buferRecepcion = inReader.readLine();
 
 			// MOstremos la cadena de caracteres recibidos:
 			System.out.println("Recibido: ");
-			for(int i=0;i<bytesLeidos;i++){
-				System.out.print((char)buferRecepcion[i]);
-			}
+			System.out.print(buferRecepcion);
 			
 			// Una vez terminado el servicio, cerramos el socket (automáticamente se cierran
 			// el inpuStream  y el outputStream)
